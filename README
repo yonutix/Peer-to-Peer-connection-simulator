@@ -1,0 +1,28 @@
+Mihai Cosmin
+Grupa:322CC
+
+Detalii protocol folosit:
+
+Sender-ul isi stabileste initial un buffer egal cu viteza*delay/dimensiune mesaj, apoi il poate mari daca primeste de la reciver o fereastra mai mare, sau il micsoreaza daca receiverul are o fereastra mai mica.
+
+Sender-ul, ca si receiver-ul face 2 categorii de pasi(negociaza):
+Primul pas pentru Sender:
+  trimite un mesaj care contine numele fisierului care va fi creat , numarul de pachete pe care are de gand sa le trimita si dimensiunea utila a datelor dintr-un cadru.Intr-un cadru se afla 1396 octeti utili, 2 pentru CRC, 2 pentru index.
+Asadar nu pot fi mai mult de aproximativ 65000 pachete.
+
+Primul pas pentru receiver:
+  trimite ACK0 insotit de dimensiunea ferestrei.
+
+Apoi, dupa ce bufferele au fost sincronizate, senderul incepe si trimite pachete cuprinse in buffer pentru a nu inunda receiverul.Receiver-ul trimite ACK[index] sau NAK daca nu a fost primit un pachet, daca a fost primit corupt sau daca s-a pierdut.
+Cand senderul primeste un NAK incepe si trimite de la ultimul ACK primit plus 1, iar daca primeste ACK deplaseaza bufferul mai in fata.
+Metoda e buna pentru pierderi sub 30%, apoi timpul creste considerabil.
+
+Pentru a calcula restul CRC am foslosit CRC-DNP.
+
+Nu folosesc campul type din msg, si nu calculez CRC si pentru campul len, sper ca nu e o problema.
+Am cosiderat 1KB=1024B
+
+Editor de text: Sublime Text 2
+Compilator: gcc version 4.4.3
+SO:Ubuntu 10.04
+
